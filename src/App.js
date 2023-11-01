@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Header from "./components/Header";
+import CardBody from "./components/CardBody";
+import Footer from "./components/Footer";
 
-function App() {
+
+
+const App = () => {
+  const [description, setDescription] = useState("");
+  const [tasks, setTasks] = useState([]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newTask = { id: Date.now(), description, isCompleted: false };
+    setTasks((tasks) => [...tasks, newTask]);
+    setDescription("");
+  };
+
+  const handleDeleteTask = (id) => {
+    setTasks((tasks) => tasks.filter((task) => task.id !== id));
+  };
+
+  const handleIsCompleted = (id) => {
+    setTasks((tasks) =>
+      tasks.map((task) =>
+        task.id === id ? { ...task, isCompleted: !task.isCompleted } : task
+      )
+    );
+  };
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="appContainer">
+      <div className="card card-shadow">
+        <Header onSetTasks={setTasks} />
+        <CardBody
+          tasks={tasks}
+          onCompleteTask={handleIsCompleted}
+          onDeleteTask={handleDeleteTask}
+        />
+        <Footer
+          description={description}
+          onChangeDescription={setDescription}
+          onSubmit={handleSubmit}
+        />
+      </div>
     </div>
   );
-}
+};
 
 export default App;
